@@ -1,0 +1,10 @@
+[.ssproj]
+author=Bruce Pascoe
+buildDir=dist/
+compiler=Cell
+description=
+mainScript=main.js
+name=mp3 SoundStream Demo
+screenHeight=480
+screenWidth=640
+
