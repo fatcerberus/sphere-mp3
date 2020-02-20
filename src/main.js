@@ -16,8 +16,8 @@ import { from, Prim, Thread } from 'sphere-runtime';
 global.window = global;
 global.setImmediate = callback => Dispatch.now(callback);
 global.clearImmediate = token => token.cancel();
-FS.evaluateScript('@/lib/aurora.js');
-FS.evaluateScript('@/lib/mp3.js');
+FS.evaluateScript('$/aurora.js');
+FS.evaluateScript('$/mp3.js');
 
 export default
 class mp3Demo extends Thread
@@ -29,7 +29,7 @@ class mp3Demo extends Thread
 
 	on_startUp()
 	{
-		let fileStream = new FileStream('@/music/chartreuseRewind.mp3', FileOp.Read);
+		let fileStream = new FileStream('music/chartreuseRewind.mp3', FileOp.Read);
 		let mp3Data = fileStream.read(fileStream.fileSize);
 		fileStream.dispose();
 		this.asset = AV.Asset.fromBuffer(mp3Data);
@@ -42,7 +42,7 @@ class mp3Demo extends Thread
 			this.asset.start();
 		});
 
-		this.albumArt = new Texture('@/images/theFelt.png');
+		this.albumArt = new Texture('images/theFelt.png');
 		this.vu1 = 0.0;
 		this.vu2 = 0.0;
 	}
@@ -54,10 +54,10 @@ class mp3Demo extends Thread
 		// calculate the current VU for this frame (for visualization)
 		let amplitudeL = from(samples)
 			.where((v, index) => index % 2 == 0)
-			.reduce((a, v) => Math.max(Math.abs(v), a), 0.0);
+			.aggregate((a, v) => Math.max(Math.abs(v), a), 0.0);
 		let amplitudeR = from(samples)
 			.where((v, index) => index % 2 == 1)
-			.reduce((a, v) => Math.max(Math.abs(v), a), 0.0);
+			.aggregate((a, v) => Math.max(Math.abs(v), a), 0.0);
 		this.vu1 = (amplitudeL + this.vu1 * 4) / 5;
 		this.vu2 = (amplitudeR + this.vu2 * 4) / 5;
 

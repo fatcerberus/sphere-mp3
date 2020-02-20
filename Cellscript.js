@@ -16,12 +16,11 @@ Object.assign(Sphere.Game,
 	summary: "",
 	resolution: '1024x768',
 
-	main: '@/bin/main.mjs',
+	main: 'scripts/main.js',
 	fullScreen: true,
 });
 
-install('@/bin', files('src/*.mjs', true));
+install('@/scripts', files('src/*.js', true));
 
 install('@/images', files('images/*.png', true));
-install('@/lib',    files('lib/*.js', true));
 install('@/music',  files('music/*.mp3', true));
