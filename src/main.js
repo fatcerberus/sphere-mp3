@@ -9,15 +9,15 @@
  *     miniSphere 5.0.0 or later is required to run this demo.
  */
 
-import { from, Prim, Thread } from 'sphere-runtime';
+import { from, Pact, Prim, Thread } from 'sphere-runtime';
 
 // Aurora.js was originally written for use in browsers, so we need to do some
 // contortions to get it to work.
-global.window = global;
-global.setImmediate = callback => Dispatch.now(callback);
-global.clearImmediate = token => token.cancel();
-FS.evaluateScript('$/aurora.js');
-FS.evaluateScript('$/mp3.js');
+if (!('window' in global)) {
+	global.window = global;
+	global.setImmediate = callback => Dispatch.now(callback);
+	global.clearImmediate = token => token.cancel();
+}
 
 export default
 class mp3Demo extends Thread
@@ -27,11 +27,17 @@ class mp3Demo extends Thread
 		super();
 	}
 
-	on_startUp()
+	async on_startUp()
 	{
-		let fileStream = new FileStream('music/chartreuseRewind.mp3', FileOp.Read);
-		let mp3Data = fileStream.read(fileStream.fileSize);
+		await Promise.all([
+			FS.evaluateScript('scripts/aurora.js'),
+			FS.evaluateScript('scripts/mp3.js'),
+		]);
+
+		const fileStream = await FileStream.fromFile('music/chartreuseRewind.mp3', FileOp.Read);
+		const mp3Data = fileStream.read(fileStream.fileSize);
 		fileStream.dispose();
+		const pact = new Pact();
 		this.asset = AV.Asset.fromBuffer(mp3Data);
 		this.asset.get('format', format => {
 			this.stream = new SoundStream(
@@ -40,9 +46,11 @@ class mp3Demo extends Thread
 			this.stream.play(Mixer.Default);
 			this.asset.on('data', buffer => this.on_receiveData(buffer));
 			this.asset.start();
+			pact.resolve();
 		});
+		await pact;
 
-		this.albumArt = new Texture('images/theFelt.png');
+		this.albumArt = await Texture.fromFile('images/theFelt.png');
 		this.vu1 = 0.0;
 		this.vu2 = 0.0;
 	}

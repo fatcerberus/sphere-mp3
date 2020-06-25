@@ -21,6 +21,7 @@ Object.assign(Sphere.Game,
 });
 
 install('@/scripts', files('src/*.js', true));
-
 install('@/images', files('images/*.png', true));
 install('@/music',  files('music/*.mp3', true));
+
+install('@/', files('icon.png'));
