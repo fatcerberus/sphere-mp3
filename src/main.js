@@ -34,9 +34,7 @@ class mp3Demo extends Thread
 			FS.evaluateScript('scripts/mp3.js'),
 		]);
 
-		const fileStream = await FileStream.fromFile('music/chartreuseRewind.mp3', FileOp.Read);
-		const mp3Data = fileStream.read(fileStream.fileSize);
-		fileStream.dispose();
+		const mp3Data = await FS.readFile('music/chartreuseRewind.mp3', DataType.Raw);
 		const pact = new Pact();
 		this.asset = AV.Asset.fromBuffer(mp3Data);
 		this.asset.get('format', format => {

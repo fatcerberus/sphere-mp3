@@ -9,12 +9,13 @@
 
 Object.assign(Sphere.Game,
 {
-	version: 2, apiLevel: 1,
-
 	name: "mp3 SoundStream Demo",
 	author: "Bruce Pascoe",
 	summary: "",
 	resolution: '1024x768',
+
+	version: 2,
+	apiLevel: 2,
 
 	main: 'scripts/main.js',
 	fullScreen: true,
