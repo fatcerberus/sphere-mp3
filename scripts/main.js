@@ -1,22 +1,19 @@
-/*
+/**
  *  mp3 SoundStream Demo for Sphere
- *  (c) 2017 Bruce Pascoe
+ *  (c) 2017-2021 Bruce Pascoe
  *
  *  Demonstrates playing back an mp3 file using the Sphere SoundStream class.
  *  Decoding is done entirely in JavaScript using the Aurora.js library.
- *
- *  IMPORTANT:
- *     miniSphere 5.0.0 or later is required to run this demo.
- */
+**/
 
-import { from, Pact, Prim, Thread } from 'sphere-runtime';
+import { from, Prim, Thread } from 'sphere-runtime';
 
 // Aurora.js was originally written for use in browsers, so we need to do some
 // contortions to get it to work.
-if (!('window' in global)) {
-	global.window = global;
-	global.setImmediate = callback => Dispatch.now(callback);
-	global.clearImmediate = token => token.cancel();
+if (!('window' in globalThis)) {
+	globalThis.window = globalThis;
+	globalThis.setImmediate = callback => Dispatch.now(callback);
+	globalThis.clearImmediate = token => token.cancel();
 }
 
 export default
@@ -35,18 +32,18 @@ class mp3Demo extends Thread
 		]);
 
 		const mp3Data = await FS.readFile('music/chartreuseRewind.mp3', DataType.Raw);
-		const pact = new Pact();
-		this.asset = AV.Asset.fromBuffer(mp3Data);
-		this.asset.get('format', format => {
-			this.stream = new SoundStream(
-				format.sampleRate, 32,  // 32-bit means float32
-				format.channelsPerFrame);
-			this.stream.play(Mixer.Default);
-			this.asset.on('data', buffer => this.on_receiveData(buffer));
-			this.asset.start();
-			pact.resolve();
+		await new Promise(resolve => {
+			this.asset = AV.Asset.fromBuffer(mp3Data);
+			this.asset.get('format', format => {
+				this.stream = new SoundStream(
+					format.sampleRate, 32,  // 32-bit means float32
+					format.channelsPerFrame);
+				this.stream.play(Mixer.Default);
+				this.asset.on('data', buffer => this.on_receiveData(buffer));
+				this.asset.start();
+				resolve();
+			});
 		});
-		await pact;
 
 		this.albumArt = await Texture.fromFile('images/theFelt.png');
 		this.vu1 = 0.0;
