@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "apiLevel": 3,
+  "name": "mp3 SoundStream Demo",
+  "author": "Bruce Pascoe",
+  "description": "An example of using Sphere's SoundStream class along with the Aurora.js library to decode and play an mp3 audio file in JavaScript.",
+  "resolution": "1024x768",
+  "main": "scripts/main.js",
+  "saveID": "mp3 SoundStream Demo"
+}
