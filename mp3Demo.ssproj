@@ -1,11 +1,11 @@
 [.ssproj]
-apiLevel=3
+apiLevel=4
 apiVersion=2
 author=Bruce Pascoe
 compiler=Sphere Classic
 description=An example of using Sphere's SoundStream class along with the Aurora.js library to decode and play an mp3 audio file in JavaScript.
 mainScript=scripts/main.js
-manageGameJson=True
+manageGameJson=False
 name=mp3 SoundStream Demo
 resolution=1024x768
 saveID=mp3 SoundStream Demo
