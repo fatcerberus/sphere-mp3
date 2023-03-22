@@ -8,30 +8,22 @@
 
 import { from, Prim, Thread } from 'sphere-runtime';
 
-// Aurora.js was originally written for use in browsers, so we need to do some
-// contortions to get it to work.
+// setImmediate is needed for aurora.js to work
 if (!('window' in globalThis)) {
 	globalThis.window = globalThis;
 	globalThis.setImmediate = callback => Dispatch.now(callback);
 	globalThis.clearImmediate = token => token.cancel();
 }
 
+await File.run('scripts/aurora.js');
+await File.run('scripts/mp3.js');
+
 export default
 class mp3Demo extends Thread
 {
-	constructor()
-	{
-		super();
-	}
-
 	async on_startUp()
 	{
-		await Promise.all([
-			FS.evaluateScript('scripts/aurora.js'),
-			FS.evaluateScript('scripts/mp3.js'),
-		]);
-
-		const mp3Data = await FS.readFile('music/chartreuseRewind.mp3', DataType.Raw);
+		const mp3Data = await File.load('music/chartreuseRewind.mp3', DataType.Raw);
 		await new Promise(resolve => {
 			this.asset = AV.Asset.fromBuffer(mp3Data);
 			this.asset.get('format', format => {
